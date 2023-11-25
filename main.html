@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/reset.css">
+  <link rel="stylesheet" href="./style/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <title>Login</title>
+</head>
+
+<body>
+  <form id="bloco">
+    <h1>Seja bem vindo!</h1>
+    <p>Usuário:</p>
+    <input type="text" name="usuario" id="usuario" />
+    <p>Senha:</p>
+    <input type="password" name="senha" id="senha" />
+    <button id="logar">Logar</button>
+  </form>
+</body>
+
+<script type="module">
+  import axios from 'https://cdn.skypack.dev/axios';
+  import Swal from 'https://cdn.skypack.dev/sweetalert2@11';
+
+  document.getElementById
+    ('logar').addEventListener('click', function (e) {
+      e.preventDefault();
+
+      if (document.getElementById('usuario').value == '' || document.getElementById('senha').value == '') {
+        Swal.fire({
+          title: "Preencha todos os campos!",
+          icon: "warning"
+        });
+        return;
+      }
+
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/login',
+        data: {
+          username: document.getElementById('usuario').value,
+          password: document.getElementById('senha').value
+        }
+      }).then(function (response) {
+        Swal.fire({
+          title: "Você está logado!",
+          icon: "success"
+        });
+      }).catch(function (error) {
+        if (error.response.data.message == 'wrong password') {
+          Swal.fire({
+            title: "Sua senha está incorreta!",
+            icon: "warning"
+          });
+        } else if (error.response.data.message == 'wrong username') {
+          Swal.fire({
+            title: "Seu usuário está incorreto!",
+            icon: "warning"
+          });
+        } else {
+          Swal.fire({
+            title: "Erro ao logar!",
+            text: "Entre em contato com o suporte",
+            icon: "error"
+          });
+        }
+      })
+
+      document.getElementById('usuario').value = '';
+      document.getElementById('senha').value = '';
+    });
+</script>
+
+
+</html>
